@@ -1,5 +1,45 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Download, Eye, EyeOff } from 'lucide-react';
+
+// Movidos para fora do componente para evitar recriação desnecessária e problemas com dependências de Hooks
+const industries = [
+  { value: 'saas', label: 'SaaS / Software' },
+  { value: 'ecommerce', label: 'E-commerce / Varejo Online' },
+  { value: 'servicos', label: 'Serviços Profissionais' },
+  { value: 'agencia', label: 'Agência Digital / Marketing' },
+  { value: 'educacao', label: 'Educação / Cursos Online' },
+  { value: 'saude', label: 'Saúde / Wellness' },
+  { value: 'real_estate', label: 'Imóveis / Real Estate' },
+  { value: 'alimentacao', label: 'Alimentação / Restaurante' },
+  { value: 'varejo', label: 'Varejo Físico' },
+  { value: 'outro', label: 'Outro' }
+];
+
+const toneExamples = {
+  generic: "Exemplo genérico: 'Formal' = respostas estruturadas; 'Descontraído' = emoticons, gírias, leveza",
+  saas: "SaaS: Geralmente Técnico ou Consultivo. Ex: 'Deixa eu te mostrar como isso funciona'",
+  ecommerce: "E-commerce: Descontraído ou Misto. Ex: 'Bora conferir nossos produtos?'",
+  servicos: "Serviços: Formal ou Consultivo. Ex: 'Posso ajudá-lo?'",
+  agencia: "Agência: Descontraído ou Criativo. Ex: 'Vamo criar algo incrível junto?'",
+  educacao: "Educação: Consultivo ou Descontraído. Ex: 'Vou te guiar nessa jornada'",
+  saude: "Saúde: Formal ou Empático. Ex: 'Seu bem-estar é nossa prioridade'",
+  real_estate: "Real Estate: Formal ou Consultivo. Ex: 'Encontre o imóvel dos seus sonhos'",
+  alimentacao: "Alimentação: Descontraído. Ex: 'Bora pedir algo gostoso?' 🍕",
+  varejo: "Varejo: Descontraído ou Amigável. Ex: 'Tá procurando algo específico?'"
+};
+
+const personalityOptions = [
+  { value: 'inovadora', label: 'Inovadora' },
+  { value: 'confiavel', label: 'Confiável' },
+  { value: 'criativa', label: 'Criativa' },
+  { value: 'acessivel', label: 'Acessível' },
+  { value: 'premium', label: 'Premium / Luxury' },
+  { value: 'sustentavel', label: 'Sustentável' },
+  { value: 'social', label: 'Social / Engajada' },
+  { value: 'eficiente', label: 'Eficiente' },
+  { value: 'ludica', label: 'Lúdica / Divertida' },
+  { value: 'minimalista', label: 'Minimalista' }
+];
 
 const WeeMakeForm = () => {
   const [formData, setFormData] = useState({
@@ -37,33 +77,7 @@ const WeeMakeForm = () => {
   });
 
   const [showPreview, setShowPreview] = useState(true);
-  const currentSection = 0;
-
-  const industries = [
-    { value: 'saas', label: 'SaaS / Software' },
-    { value: 'ecommerce', label: 'E-commerce / Varejo Online' },
-    { value: 'servicos', label: 'Serviços Profissionais' },
-    { value: 'agencia', label: 'Agência Digital / Marketing' },
-    { value: 'educacao', label: 'Educação / Cursos Online' },
-    { value: 'saude', label: 'Saúde / Wellness' },
-    { value: 'real_estate', label: 'Imóveis / Real Estate' },
-    { value: 'alimentacao', label: 'Alimentação / Restaurante' },
-    { value: 'varejo', label: 'Varejo Físico' },
-    { value: 'outro', label: 'Outro' }
-  ];
-
-  const toneExamples = {
-    generic: "Exemplo genérico: 'Formal' = respostas estruturadas; 'Descontraído' = emoticons, gírias, leveza",
-    saas: "SaaS: Geralmente Técnico ou Consultivo. Ex: 'Deixa eu te mostrar como isso funciona'",
-    ecommerce: "E-commerce: Descontraído ou Misto. Ex: 'Bora conferir nossos produtos?'",
-    servicos: "Serviços: Formal ou Consultivo. Ex: 'Posso ajudá-lo?'",
-    agencia: "Agência: Descontraído ou Criativo. Ex: 'Vamo criar algo incrível junto?'",
-    educacao: "Educação: Consultivo ou Descontraído. Ex: 'Vou te guiar nessa jornada'",
-    saude: "Saúde: Formal ou Empático. Ex: 'Seu bem-estar é nossa prioridade'",
-    real_estate: "Real Estate: Formal ou Consultivo. Ex: 'Encontre o imóvel dos seus sonhos'",
-    alimentacao: "Alimentação: Descontraído. Ex: 'Bora pedir algo gostoso?' 🍕",
-    varejo: "Varejo: Descontraído ou Amigável. Ex: 'Tá procurando algo específico?'"
-  };
+  // Removido: const currentSection = 0; (Não estava sendo utilizado)
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -83,7 +97,8 @@ const WeeMakeForm = () => {
     }
   };
 
-  const generateOmnacoes = () => {
+  // Envolvido em useCallback para resolver o aviso do exhaustive-deps
+  const generateOmnacoes = useCallback(() => {
     let output = '';
 
     // 1. ROLE DEFINITION (Max 5000 characters)
@@ -221,9 +236,9 @@ const WeeMakeForm = () => {
     output += `\n\n[Caracteres: ${interactionExamples.length}/5000]\n\n`;
 
     return output;
-  };
+  }, [formData]);
 
-  const omnacoesBriefing = useMemo(() => generateOmnacoes(), [formData]);
+  const omnacoesBriefing = useMemo(() => generateOmnacoes(), [generateOmnacoes]);
 
   const exportBriefing = () => {
     const element = document.createElement('a');
@@ -234,19 +249,6 @@ const WeeMakeForm = () => {
     element.click();
     document.body.removeChild(element);
   };
-
-  const personalityOptions = [
-    { value: 'inovadora', label: 'Inovadora' },
-    { value: 'confiavel', label: 'Confiável' },
-    { value: 'criativa', label: 'Criativa' },
-    { value: 'acessivel', label: 'Acessível' },
-    { value: 'premium', label: 'Premium / Luxury' },
-    { value: 'sustentavel', label: 'Sustentável' },
-    { value: 'social', label: 'Social / Engajada' },
-    { value: 'eficiente', label: 'Eficiente' },
-    { value: 'ludica', label: 'Lúdica / Divertida' },
-    { value: 'minimalista', label: 'Minimalista' }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -427,7 +429,8 @@ const WeeMakeForm = () => {
 
               {/* Seção 4: Pricing (condicional) */}
               {formData.show_prices === true && (
-                <div className="bg-white rounded-lg shadow-sm p-6 border-l-4" style={{ borderLeftColor: '#EC4899' }} style={{animation: 'fadeIn 0.3s ease-in'}}>
+                // Propriedades style duplicadas combinadas em um único objeto!
+                <div className="bg-white rounded-lg shadow-sm p-6 border-l-4" style={{ borderLeftColor: '#EC4899', animation: 'fadeIn 0.3s ease-in' }}>
                   <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="text-2xl mr-2">💰</span> Pricing & Orçamentos
                   </h2>
