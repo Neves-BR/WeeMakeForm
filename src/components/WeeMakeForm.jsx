@@ -253,13 +253,13 @@ const WeeMakeForm = () => {
     return output;
   }, [formData]);
 
-  const omnacoesBriefing = useMemo(() => generateOmnacoes(), [generateOmnacoes]);
-
-  const exportBriefing = () => {
-    const result = await onSave(formData);
-      if (!result.success) {
-        console.warn('⚠️ Falha ao salvar, mas continuando com export');
-      }
+    const omnacoesBriefing = useMemo(() => generateOmnacoes(), [generateOmnacoes]);
+    const exportBriefing = () => {
+      
+      const result = await onSave(formData);
+        if (!result.success) {
+          console.warn('⚠️ Falha ao salvar, mas continuando com export');
+        }
     const element = document.createElement('a');
     const file = new Blob([omnacoesBriefing], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
