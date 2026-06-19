@@ -76,6 +76,17 @@ const WeeMakeForm = () => {
     additional_info: '',
     contact_method: ''
   });
+  
+  const { 
+    briefingId, 
+    isSaving, 
+    saveStatus, 
+    saveError,
+    isConnected,
+    onSave, 
+    onAutoSave,
+    onReset 
+  } = useSupabaseBriefing(formData);
 
   const [showPreview, setShowPreview] = useState(true);
   // Removido: const currentSection = 0; (Não estava sendo utilizado)
