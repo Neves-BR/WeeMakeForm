@@ -1,7 +1,7 @@
 {
   "name": "wee-make-briefing-form",
   "version": "1.0.0",
-  "description": "Formulário interativo para gerar briefings parametrizados de chatbot WhatsApp (Omnacoes) - Wee Make",
+  "description": "Formulário interativo para gerar briefings parametrizados de chatbot WhatsApp (Automacoes) - Wee Make",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
