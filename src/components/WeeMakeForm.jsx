@@ -94,22 +94,29 @@ const WeeMakeForm = () => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     
-    if (type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: checked 
+    // 1. Calcula o novo estado primeiro
+    const getUpdatedValue = (prev) => {
+      if (type === 'checkbox') {
+        return checked 
           ? [...(prev[name] || []), value]
-          : (prev[name] || []).filter(item => item !== value)
-      }));
-    } else {
-      setFormData(prev => ({
+          : (prev[name] || []).filter(item => item !== value);
+      }
+      return value;
+    };
+
+    setFormData(prev => {
+      const updatedFormData = {
         ...prev,
-        [name]: value
-      }));
-    }
-    if (isConnected) {
-    onAutoSave(updatedFormData);
-  }
+        [name]: getUpdatedValue(prev)
+      };
+      
+      // 2. Chama o auto-save com o dado atualizado
+      if (isConnected) {
+        onAutoSave(updatedFormData);
+      }
+      
+      return updatedFormData;
+    });
   };
 
   // Envolvido em useCallback para resolver o aviso do exhaustive-deps
