@@ -63,6 +63,10 @@ wee-make-briefing-form/
 ├── src/
 │   ├── components/
 │   │   └── WeeMakeForm.jsx
+│   ├── hooks/
+│   │   └── useSupabaseBriefing.js
+│   ├── services/
+│   │   └── supabaseService.js
 │   ├── index.css
 │   └── index.js
 ├── package.json
