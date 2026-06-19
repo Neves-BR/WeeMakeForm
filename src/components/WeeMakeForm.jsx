@@ -78,14 +78,9 @@ const WeeMakeForm = () => {
   });
   
   const { 
-    briefingId, 
-    isSaving, 
-    saveStatus, 
-    saveError,
-    isConnected,
-    onSave, 
-    onAutoSave,
-    onReset 
+  isConnected,
+  onSave, 
+  onAutoSave
   } = useSupabaseBriefing(formData);
 
   const [showPreview, setShowPreview] = useState(true);
