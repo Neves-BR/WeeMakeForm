@@ -107,6 +107,9 @@ const WeeMakeForm = () => {
         [name]: value
       }));
     }
+    if (isConnected) {
+    onAutoSave(updatedFormData);
+  }
   };
 
   // Envolvido em useCallback para resolver o aviso do exhaustive-deps
